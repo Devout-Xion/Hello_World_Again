@@ -1,0 +1,476 @@
+Public Class Vegetable_Valley
+    Private JumpAmount As Byte
+    Public Jump As Boolean
+    Public MoveLeft As Boolean = False
+    Public MoveRight As Boolean = False
+    Private JumpCount As Byte
+    Private Standing As Boolean
+    Private Floor As PictureBox
+    Private floor2 As PictureBox
+    Private floor3 As PictureBox
+    Private Floor4 As PictureBox
+    Private Floor5 As PictureBox
+    Private Wall As PictureBox
+    Private Wall2 As PictureBox
+    Private Wall3 As PictureBox
+    Public Kirbing As Integer = 12
+    Public KirbingLeft As Integer = 12
+    Public Fluff As Integer = 3
+    Public Puffball As Integer = 13
+    Public Score As Long = 0
+    Public Bomb As Integer = 6
+    Public Carrot As Integer = 7
+    Public Tomato As Integer = 6
+    Public Meat As Integer = 6
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Boundaries.Start()
+        Floor = GroundBound1 : floor2 = GroundBound2 : floor3 = HillBoundTop : Floor4 = HillBound1Left : Floor5 = HillBound3Top
+        'Wall(1) = HillBoundLeft : Wall2(1) = HillBound3Left : Wall3(1) = HillBoundRight
+        MusicPlayer()
+        Kirb.Start()
+        Kirbo.Enabled = False
+        KirboLeft.Enabled = False
+        Blinker.Enabled = False
+        If Kirbo.Enabled = False Then
+            Blinker.Enabled = True
+            Poyo.Image = My.Resources.Resource1.KirbIdle
+        End If
+    End Sub
+
+    Sub MusicPlayer()
+        My.Computer.Audio.Play(My.Resources.Resource1.Grape_Garden, AudioPlayMode.BackgroundLoop)
+    End Sub
+
+
+
+    Private Sub Form1_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Select Case e.KeyValue
+            Case Keys.D
+                MoveRight = True
+                Kirbo.Enabled = True
+                Blinker.Enabled = False
+            Case Keys.A
+                MoveLeft = True
+                KirboLeft.Enabled = True
+                Blinker.Enabled = False
+            Case Keys.Escape
+                Me.Close()
+        End Select
+
+        If Standing = True Then
+            If e.KeyCode = Keys.Space Then
+                Jump = True
+                Standing = False
+                Jumping.Enabled = True
+            End If
+        End If
+
+
+    End Sub
+    Private Sub Form1_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
+        Select Case e.KeyCode
+            Case Keys.D
+                Kirbo.Enabled = False
+                MoveRight = False
+                Blinker.Enabled = True
+            Case Keys.A
+                MoveLeft = False
+                KirboLeft.Enabled = False
+                Blinker.Enabled = True
+        End Select
+
+        If e.KeyCode = Keys.Space Then
+            Jump = False
+        End If
+    End Sub
+
+    Private Sub Bounds_Tick(sender As Object, e As EventArgs) Handles Boundaries.Tick
+
+        If Poyo.Bounds.IntersectsWith(LeftBounds.Bounds) Then
+            Poyo.Left = Poyo.Left + 5
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(GroundBound1.Bounds) Then
+            Poyo.Top = Poyo.Top - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(GroundBound2.Bounds) Then
+            Poyo.Top = Poyo.Top - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(GroundBound2Left.Bounds) Then
+            Poyo.Left = Poyo.Left - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBoundLeft.Bounds) Then
+            Poyo.Left = Poyo.Left - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBoundTop.Bounds) Then
+            Poyo.Top = Poyo.Top - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBoundRight.Bounds) Then
+            Poyo.Left = Poyo.Left + 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound1Left.Bounds) Then
+            Poyo.Left = Poyo.Left - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound1Top.Bounds) Then
+            Poyo.Top = Poyo.Top - 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound1Right.Bounds) Then
+            Poyo.Left = Poyo.Left + 3
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound3Left.Bounds) Then
+            Poyo.Left = Poyo.Left - 1
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound3Right1.Bounds) Then
+            Poyo.Left = Poyo.Left + 1
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound3Right2.Bounds) Then
+            Poyo.Left = Poyo.Left + 1
+            Standing = True
+        End If
+
+
+        If Poyo.Bounds.IntersectsWith(HillBound3Top.Bounds) Then
+            Poyo.Top = Poyo.Top - 1
+            Standing = True
+        End If
+
+        If Poyo.Bounds.IntersectsWith(HillBound3Top2.Bounds) Then
+            Poyo.Top = Poyo.Top - 0.1
+            Standing = True
+
+        End If
+
+
+    End Sub
+
+    Private Sub Kirbo_Tick(sender As Object, e As EventArgs) Handles Kirbo.Tick
+        Animationing()
+        While Kirbing <= 2
+            If Kirbing <= 2 Then
+                Kirbing = 12
+            End If
+        End While
+    End Sub
+
+    Sub Animationing()
+        Kirbing -= 1
+        Select Case Kirbing
+            Case 11
+                Poyo.Image = My.Resources.Resource1.Kirb2
+            Case 10
+                Poyo.Image = My.Resources.Resource1.Kirb3
+            Case 9
+                Poyo.Image = My.Resources.Resource1.Kirb4
+            Case 8
+                Poyo.Image = My.Resources.Resource1.Kirb5
+            Case 7
+                Poyo.Image = My.Resources.Resource1.Kirb6
+            Case 6
+                Poyo.Image = My.Resources.Resource1.Kirb7
+            Case 5
+                Poyo.Image = My.Resources.Resource1.Kirb8
+            Case 4
+                Poyo.Image = My.Resources.Resource1.Kirb9
+            Case 3
+                Poyo.Image = My.Resources.Resource1.Kirb10
+            Case 2
+                Poyo.Image = My.Resources.Resource1.Kirb11
+        End Select
+    End Sub
+
+    Private Sub Kirb_Tick(sender As Object, e As EventArgs) Handles Kirb.Tick
+        If MoveRight = True Then
+            Poyo.Left = Poyo.Left + 5
+            Kirb.Enabled = True
+        End If
+        If MoveLeft = True Then
+            Poyo.Left = Poyo.Left - 5
+            Kirb.Enabled = True
+        End If
+    End Sub
+
+    Private Sub Blinker_Tick(sender As Object, e As EventArgs) Handles Blinker.Tick
+        Animating2()
+        While Fluff < 1
+            If Fluff < 1 Then
+                Fluff = 3
+            End If
+        End While
+    End Sub
+
+    Sub Animating2()
+        Fluff -= 1
+        Select Case Fluff
+            Case 1
+                Poyo.Image = My.Resources.Resource1.KirbBlink
+        End Select
+        If Fluff = 2 Then
+            Poyo.Image = My.Resources.Resource1.KirbIdle
+        End If
+    End Sub
+
+    Private Sub KirboLeft_Tick(sender As Object, e As EventArgs) Handles KirboLeft.Tick
+        Animationing2()
+        While KirbingLeft <= 2
+            If KirbingLeft <= 2 Then
+                KirbingLeft = 12
+            End If
+        End While
+    End Sub
+
+    Sub Animationing2()
+        KirbingLeft -= 1
+        Select Case KirbingLeft
+            Case 11
+                Poyo.Image = My.Resources.Resource1.Kirb2L
+            Case 10
+                Poyo.Image = My.Resources.Resource1.Kirb3L
+            Case 9
+                Poyo.Image = My.Resources.Resource1.Kirb4L
+            Case 8
+                Poyo.Image = My.Resources.Resource1.Kirb5L
+            Case 7
+                Poyo.Image = My.Resources.Resource1.Kirb6L
+            Case 6
+                Poyo.Image = My.Resources.Resource1.Kirb7L
+            Case 5
+                Poyo.Image = My.Resources.Resource1.Kirb8L
+            Case 4
+                Poyo.Image = My.Resources.Resource1.Kirb9L
+            Case 3
+                Poyo.Image = My.Resources.Resource1.Kirb10L
+            Case 2
+                Poyo.Image = My.Resources.Resource1.Kirb11L
+        End Select
+    End Sub
+
+    Private Sub Jumping_Tick(sender As Object, e As EventArgs) Handles Jumping.Tick
+        Puff()
+        While Puffball <= 1
+            If Puffball <= 0 Then
+                Puffball = 6
+            End If
+        End While
+    End Sub
+
+    Sub Puff()
+        Puffball -= 1
+        Select Case Puffball
+            Case 14
+                Poyo.Image = My.Resources.Resource1.KirbyJump1
+            Case 13
+                Poyo.Image = My.Resources.Resource1.KirbyJump2
+            Case 12
+                Poyo.Image = My.Resources.Resource1.KirbyJump3
+            Case 11
+                Poyo.Image = My.Resources.Resource1.KirbyJump4
+            Case 10
+                Poyo.Image = My.Resources.Resource1.KirbyJump5
+            Case 9
+                Poyo.Image = My.Resources.Resource1.KirbyJump6
+            Case 8
+                Poyo.Image = My.Resources.Resource1.KirbyJump7
+            Case 7
+                Poyo.Image = My.Resources.Resource1.KirbyJump8
+            Case 6
+                Poyo.Image = My.Resources.Resource1.KirbyJump9
+            Case 5
+                Poyo.Image = My.Resources.Resource1.KirbyJump10
+            Case 4
+                Poyo.Image = My.Resources.Resource1.KirbyJump11
+            Case 3
+                Poyo.Image = My.Resources.Resource1.KirbyJump12
+            Case 2
+                Poyo.Image = My.Resources.Resource1.KirbyJump13
+            Case 1
+                Poyo.Image = My.Resources.Resource1.KirbyJump12
+            Case 0
+                Poyo.Image = My.Resources.Resource1.KirbyJump11
+        End Select
+
+    End Sub
+
+
+    Private Sub GameT_Tick(sender As Object, e As EventArgs) Handles GameT.Tick
+        Poyo.Top += 11
+        '    '  For x = 1 To 1
+        If Poyo.Bounds.IntersectsWith(Floor.Bounds) And Poyo.Bounds.IntersectsWith(floor2.Bounds) And Poyo.Bounds.IntersectsWith(floor3.Bounds) And Poyo.Bounds.IntersectsWith(Floor4.Bounds) And Poyo.Bounds.IntersectsWith(Floor5.Bounds) And Floor.Visible = True And floor2.Visible = True And floor3.Visible = True And Floor4.Visible = True And Floor5.Visible = True Then
+            Standing = True
+            Poyo.Top -= 20
+        End If
+
+        '    'If Poyo.Bounds.IntersectsWith(Wall(1).Bounds) And Poyo.Bounds.IntersectsWith(Wall2(1).Bounds) And Poyo.Bounds.IntersectsWith(Wall3(1).Bounds) And Wall(1).Visible = True And Wall2(1).Visible = True And Wall3(1).Visible = True Then
+        '    ' Standing = True
+        '    '   Poyo.Top -= 3
+        '    ' End If
+        '    '  Next x
+    End Sub
+
+    Private Sub Movement_Tick(sender As Object, e As EventArgs) Handles Movement.Tick
+        If Jump = True Then
+            Poyo.Top -= 15
+            JumpAmount += 1
+            If JumpAmount >= 30 Then
+                JumpAmount = 0
+                Jump = False
+            End If
+        End If
+    End Sub
+
+    Private Sub Carroting_Tick(sender As Object, e As EventArgs) Handles Carroting.Tick
+        Carrot -= 1
+        Carroter()
+    End Sub
+
+    Sub Carroter()
+        Select Case Carrot
+            Case 6
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_03
+            Case 5
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_04
+            Case 4
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_05
+            Case 3
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_05
+            Case 2
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_04
+            Case 1
+                Orangething.Image = My.Resources.Resource1.Food_Sprit_e_03
+            Case 0
+                Carroting.Enabled = False
+                Carrot = 8
+                Carroting.Enabled = True
+        End Select
+    End Sub
+
+    Private Sub Tomatoing_Tick(sender As Object, e As EventArgs) Handles Tomatoing.Tick
+        Tomato -= 1
+        Tomater()
+    End Sub
+
+    Sub Tomater()
+        Select Case Tomato
+            Case 5
+                RedFruit.Image = My.Resources.Resource1.Food_Sprit_e_91
+            Case 4
+                RedFruit.Image = My.Resources.Resource1.Food_Sprit_e_92
+            Case 3
+                RedFruit.Image = My.Resources.Resource1.Food_Sprit_e_93
+            Case 2
+                RedFruit.Image = My.Resources.Resource1.Food_Sprit_e_92
+            Case 1
+                RedFruit.Image = My.Resources.Resource1.Food_Sprit_e_91
+            Case 0
+                Tomatoing.Enabled = False
+                Tomato = 7
+                Tomatoing.Enabled = True
+        End Select
+    End Sub
+
+    Private Sub Bombing_Tick(sender As Object, e As EventArgs) Handles Bombing.Tick
+        Bomb -= 1
+        Bomber()
+    End Sub
+
+    Sub Bomber()
+        Select Case Bomb
+            Case 5
+                Exploder.Image = My.Resources.Resource1.The_Bomb_sprtie_the_one
+            Case 4
+                Exploder.Image = My.Resources.Resource1.The_Bomb_sprtie_the_one
+            Case 3
+                Exploder.Image = My.Resources.Resource1.The_Bomb_sprtie_the_one
+            Case 2
+                Exploder.Image = My.Resources.Resource1.The_Bomb_sprtie_the_one
+            Case 1
+                Exploder.Image = My.Resources.Resource1.The_Bomb_sprtie_the_one
+            Case 0
+                Bombing.Enabled = False
+                Bomb = 7
+                Bombing.Enabled = True
+        End Select
+    End Sub
+
+    Private Sub Meater_Tick(sender As Object, e As EventArgs) Handles Meating.Tick
+        Meat -= 1
+        EdibleAnimal()
+    End Sub
+
+    Sub EdibleAnimal()
+        Select Case Meat
+            Case 5
+                Meater.Image = My.Resources.Resource1.Food_Sprit_e_12
+            Case 4
+                Meater.Image = My.Resources.Resource1.Food_Sprit_e_13
+            Case 3
+                Meater.Image = My.Resources.Resource1.Food_Sprit_e_14
+            Case 2
+                Meater.Image = My.Resources.Resource1.Food_Sprit_e_13
+            Case 1
+                Meater.Image = My.Resources.Resource1.Food_Sprit_e_12
+            Case 0
+                Meating.Enabled = False
+                Meat = 7
+                Meating.Enabled = True
+        End Select
+    End Sub
+
+    Private Sub Box_Tick(sender As Object, e As EventArgs) Handles Frick.Tick
+        If Poyo.Bounds.IntersectsWith(Orangething.Bounds) Then
+            Orangething.Enabled = False
+            Me.Controls.Remove(Orangething)
+            Orangething.Location = New Point(0, 0)
+            Score1()
+        End If
+
+        If Poyo.Bounds.IntersectsWith(RedFruit.Bounds) Then
+            RedFruit.Enabled = False
+            Me.Controls.Remove(RedFruit)
+            RedFruit.Location = New Point(0, 0)
+            Score1()
+        End If
+
+        If Poyo.Bounds.IntersectsWith(Meater.Bounds) Then
+            Meater.Enabled = False
+            Me.Controls.Remove(Meater)
+            Meater.Location = New Point(0, 0)
+            Score1()
+        End If
+
+        If Poyo.Bounds.IntersectsWith(Exploder.Bounds) Then
+            Exploder.Enabled = False
+            Me.Controls.Remove(Exploder)
+            MessageBox.Show("GET GAME ENDED")
+            Me.Close()
+        End If
+    End Sub
+
+    Sub Score1()
+        Score += 11111119
+        Scoring.Text = Score
+    End Sub
+End Class
